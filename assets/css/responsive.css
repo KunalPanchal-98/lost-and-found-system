@@ -1,9 +1,4 @@
 @media (max-width: 768px) {
-    .nav-links {
-        gap: 12px;
-        font-size: 0.82rem;
-    }
-
     .hero {
         padding-top: 48px;
     }

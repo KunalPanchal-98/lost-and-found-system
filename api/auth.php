@@ -21,7 +21,12 @@ apiRun(function (PDO $pdo): void {
         $phone = trim((string) ($data['phone'] ?? ''));
         $password = (string) ($data['password'] ?? '');
         $confirmPassword = (string) ($data['confirm_password'] ?? '');
-        if ($name === '' || strlen($name) > 255 || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 255 || $studentId === '' || strlen($studentId) > 100 || $phone === '' || strlen($phone) > 50 || strlen($password) < 8) {
+        $valid = $name !== '' && strlen($name) <= 255
+            && filter_var($email, FILTER_VALIDATE_EMAIL) !== false && strlen($email) <= 255
+            && $studentId !== '' && strlen($studentId) <= 100
+            && $phone !== '' && strlen($phone) <= 50
+            && strlen($password) >= 8;
+        if (!$valid) {
             apiRespond(false, 'Provide your name, valid email, student ID, phone, and a password of at least 8 characters.', [], 422);
         }
         if (!hash_equals($password, $confirmPassword)) {
@@ -44,12 +49,14 @@ apiRun(function (PDO $pdo): void {
         $stmt->execute([$email]);
         $user = $stmt->fetch();
         $storedPassword = (string) ($user['password'] ?? '');
-        $legacyMatch = $storedPassword !== '' && password_get_info($storedPassword)['algo'] === 0 && hash_equals($storedPassword, $password);
+        $legacyHash = $storedPassword !== '' && password_get_info($storedPassword)['algo'] === 0;
+        $legacyMatch = $legacyHash && hash_equals($storedPassword, $password);
         if (!$user || $user['status'] !== 'active' || (!password_verify($password, $storedPassword) && !$legacyMatch)) {
             apiRespond(false, 'Invalid email or password.', [], 401);
         }
         if ($legacyMatch) {
-            $pdo->prepare('UPDATE users SET password = ? WHERE id = ?')->execute([password_hash($password, PASSWORD_DEFAULT), (int) $user['id']]);
+            $update = $pdo->prepare('UPDATE users SET password = ? WHERE id = ?');
+            $update->execute([password_hash($password, PASSWORD_DEFAULT), (int) $user['id']]);
         }
         session_regenerate_id(true);
         $_SESSION['user_id'] = (int) $user['id'];
@@ -72,10 +79,14 @@ apiRun(function (PDO $pdo): void {
         $name = trim((string) ($data['name'] ?? ''));
         $phone = trim((string) ($data['phone'] ?? ''));
         $studentId = trim((string) ($data['student_id'] ?? ''));
-        if ($name === '' || strlen($name) > 255 || $phone === '' || strlen($phone) > 50 || $studentId === '' || strlen($studentId) > 100) {
+        $valid = $name !== '' && strlen($name) <= 255
+            && $phone !== '' && strlen($phone) <= 50
+            && $studentId !== '' && strlen($studentId) <= 100;
+        if (!$valid) {
             apiRespond(false, 'Name, phone, and student ID are required.', [], 422);
         }
-        $pdo->prepare('UPDATE users SET name = ?, phone = ?, student_id = ?, updated_at = NOW() WHERE id = ?')->execute([$name, $phone, $studentId, $user['id']]);
+        $update = $pdo->prepare('UPDATE users SET name = ?, phone = ?, student_id = ?, updated_at = NOW() WHERE id = ?');
+        $update->execute([$name, $phone, $studentId, $user['id']]);
         $user['name'] = $name;
         $user['phone'] = $phone;
         $user['student_id'] = $studentId;

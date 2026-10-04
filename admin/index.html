@@ -1,6 +1,93 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="campusFindApp"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Admin Dashboard | CampusFind</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"><link rel="stylesheet" href="../assets/css/style.css"><link rel="stylesheet" href="../assets/css/dashboard.css"><link rel="stylesheet" href="../assets/css/responsive.css"><script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script><script defer src="../assets/js/app.js"></script></head>
-<body data-page="admin-index" data-base="../" ng-controller="PageController"><nav class="topbar"><div class="container nav-wrap"><a href="../index.html" class="brand">CampusFind Admin</a><div class="nav-links"><a href="../index.html">Public site</a><a href="#" ng-click="$event.preventDefault(); logout()">Logout</a></div></div></nav>
-<section class="dashboard-shell admin-shell"><div class="container dashboard-layout"><aside class="sidebar"><div class="sidebar-brand">Admin</div><nav><a class="active" href="index.html">Dashboard</a><a href="users.html">Users</a><a href="items.html">Items</a><a href="claims.html">Claims</a><a href="categories.html">Categories</a><a href="locations.html">Locations</a><a href="reports.html">Reports</a></nav></aside>
-<main class="content-panel"><div class="page-header"><div><p class="eyebrow">Operations dashboard</p><h1>Admin overview</h1></div></div><div class="form-alert" ng-if="message" ng-class="messageType">{{message}}</div><div class="stats-grid dashboard-stats"><div class="stat-box"><span>Total Users</span><strong>{{stats.total_users}}</strong></div><div class="stat-box"><span>Lost Items</span><strong>{{stats.lost_items}}</strong></div><div class="stat-box"><span>Found Items</span><strong>{{stats.found_items}}</strong></div><div class="stat-box"><span>Recovered Items</span><strong>{{stats.recovered_items}}</strong></div><div class="stat-box"><span>Pending Claims</span><strong>{{stats.pending_claims}}</strong></div><div class="stat-box"><span>Pending Verification</span><strong>{{stats.pending_verification}}</strong></div></div></main></div></section></body></html>
+<html lang="en" ng-app="campusFindApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Dashboard | CampusFind</title>
+    <meta name="description" content="CampusFind administration overview.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script defer src="../assets/js/app.js"></script>
+</head>
+<body data-page="admin-index" data-base="../" ng-controller="PageController" ng-cloak>
+    <nav class="topbar">
+        <div class="container nav-wrap">
+            <a href="../index.html" class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <line x1="16.2" y1="16.2" x2="21" y2="21"></line>
+                    </svg>
+                </span>
+                <span>CampusFind Admin</span>
+            </a>
+            <button type="button" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="{{navOpen}}" ng-click="toggleNav()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" ng-class="{ open: navOpen }" ng-click="navOpen = false">
+                <a href="../index.html">Public site</a>
+                <a ng-if="user" href="#" ng-click="$event.preventDefault(); logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="dashboard-shell admin-shell">
+        <div class="container dashboard-layout">
+            <aside class="sidebar">
+                <div class="sidebar-brand">Admin</div>
+                <nav>
+                    <a class="active" href="index.html">Dashboard</a>
+                    <a href="users.html">Users</a>
+                    <a href="items.html">Items</a>
+                    <a href="claims.html">Claims</a>
+                    <a href="categories.html">Categories</a>
+                    <a href="locations.html">Locations</a>
+                    <a href="reports.html">Reports</a>
+                </nav>
+            </aside>
+            <main class="content-panel">
+                <div class="page-header">
+                    <div>
+                        <p class="eyebrow">Operations dashboard</p>
+                        <h1>Admin overview</h1>
+                    </div>
+                </div>
+                <div class="form-alert" ng-if="message" ng-class="messageType">{{message}}</div>
+                <div class="stats-grid dashboard-stats">
+                    <div class="stat-box">
+                        <span>Total Users</span>
+                        <strong>{{stats.total_users}}</strong>
+                    </div>
+                    <div class="stat-box">
+                        <span>Lost Items</span>
+                        <strong>{{stats.lost_items}}</strong>
+                    </div>
+                    <div class="stat-box">
+                        <span>Found Items</span>
+                        <strong>{{stats.found_items}}</strong>
+                    </div>
+                    <div class="stat-box">
+                        <span>Recovered Items</span>
+                        <strong>{{stats.recovered_items}}</strong>
+                    </div>
+                    <div class="stat-box">
+                        <span>Pending Claims</span>
+                        <strong>{{stats.pending_claims}}</strong>
+                    </div>
+                    <div class="stat-box">
+                        <span>Pending Verification</span>
+                        <strong>{{stats.pending_verification}}</strong>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </section>
+</body>
+</html>

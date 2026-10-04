@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="campusFindApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profile | CampusFind</title>
+    <meta name="description" content="Manage your CampusFind profile details.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script defer src="assets/js/app.js"></script>
+</head>
+<body data-page="profile" ng-controller="PageController" ng-cloak>
+    <nav class="topbar">
+        <div class="container nav-wrap">
+            <a href="index.html" class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <line x1="16.2" y1="16.2" x2="21" y2="21"></line>
+                    </svg>
+                </span>
+                <span>CampusFind</span>
+            </a>
+            <button type="button" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="{{navOpen}}" ng-click="toggleNav()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" ng-class="{ open: navOpen }" ng-click="navOpen = false">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="notifications.html">Notifications</a>
+                <a ng-if="user" href="#" ng-click="$event.preventDefault(); logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-section">
+        <div class="container narrow-container">
+            <div class="page-header narrow-header">
+                <div>
+                    <p class="eyebrow">User profile</p>
+                    <h1>Manage profile</h1>
+                </div>
+            </div>
+            <div class="form-alert error" ng-if="message && messageType === 'error'">{{message}}</div>
+            <div class="form-alert success" ng-if="message && messageType === 'success'">{{message}}</div>
+            <form class="stack-form" ng-submit="saveProfile()">
+                <div class="input-grid two-col">
+                    <div class="field-group">
+                        <label for="profile-name">Full Name</label>
+                        <input id="profile-name" ng-model="form.name" required>
+                    </div>
+                    <div class="field-group">
+                        <label for="profile-email">Email</label>
+                        <input id="profile-email" type="email" ng-model="form.email" disabled>
+                    </div>
+                    <div class="field-group">
+                        <label for="profile-student-id">Student/Employee ID</label>
+                        <input id="profile-student-id" ng-model="form.student_id" required>
+                    </div>
+                    <div class="field-group">
+                        <label for="profile-phone">Phone Number</label>
+                        <input id="profile-phone" type="tel" ng-model="form.phone" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Profile</button>
+            </form>
+        </div>
+    </section>
+</body>
+</html>

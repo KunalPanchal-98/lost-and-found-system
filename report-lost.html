@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="campusFindApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Report Lost Item | CampusFind</title>
+    <meta name="description" content="Report a lost item on campus with details and a photo.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script defer src="assets/js/app.js"></script>
+</head>
+<body data-page="report-lost" ng-controller="PageController" ng-cloak>
+    <nav class="topbar">
+        <div class="container nav-wrap">
+            <a href="index.html" class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <line x1="16.2" y1="16.2" x2="21" y2="21"></line>
+                    </svg>
+                </span>
+                <span>CampusFind</span>
+            </a>
+            <button type="button" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="{{navOpen}}" ng-click="toggleNav()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" ng-class="{ open: navOpen }" ng-click="navOpen = false">
+                <a href="browse.html">Browse Items</a>
+                <a ng-if="user" href="dashboard.html">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-section">
+        <div class="container narrow-container">
+            <div class="page-header narrow-header">
+                <div>
+                    <p class="eyebrow">Report a loss</p>
+                    <h1>Report Lost Item</h1>
+                </div>
+            </div>
+            <div class="form-alert error" ng-if="message">{{message}}</div>
+            <form class="stack-form" enctype="multipart/form-data" ng-submit="submitReport($event.target)">
+                <input type="hidden" name="type" value="lost">
+                <div class="input-grid two-col">
+                    <div class="field-group">
+                        <label for="lost-name">Item Name</label>
+                        <input id="lost-name" name="name" required maxlength="255">
+                    </div>
+                    <div class="field-group">
+                        <label for="lost-category">Category</label>
+                        <select id="lost-category" name="category_id" required>
+                            <option value="">Select category</option>
+                            <option ng-repeat="category in categories" ng-value="category.id">{{category.name}}</option>
+                        </select>
+                    </div>
+                    <div class="field-group full-width">
+                        <label for="lost-description">Description</label>
+                        <textarea id="lost-description" name="description" rows="4" required></textarea>
+                    </div>
+                    <div class="field-group">
+                        <label for="lost-date">Lost Date</label>
+                        <input id="lost-date" name="item_date" type="date" required>
+                    </div>
+                    <div class="field-group">
+                        <label for="lost-time">Approximate Time</label>
+                        <input id="lost-time" name="item_time" type="time">
+                    </div>
+                    <div class="field-group">
+                        <label for="lost-location">Lost Location</label>
+                        <select id="lost-location" name="location_id" required>
+                            <option value="">Select location</option>
+                            <option ng-repeat="location in locations" ng-value="location.id">{{location.name}}</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label for="lost-color">Colour</label>
+                        <input id="lost-color" name="color">
+                    </div>
+                    <div class="field-group">
+                        <label for="lost-brand">Brand</label>
+                        <input id="lost-brand" name="brand">
+                    </div>
+                    <div class="field-group full-width">
+                        <label for="lost-identifying-details">Unique Identifying Details</label>
+                        <textarea id="lost-identifying-details" name="identifying_details" rows="3"></textarea>
+                    </div>
+                    <div class="field-group full-width">
+                        <label for="lost-image">Item Image (JPG, PNG, WEBP; max 5 MB)</label>
+                        <input id="lost-image" type="file" name="image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" ng-disabled="busy">{{busy ? 'Submitting…' : 'Submit Lost Report'}}</button>
+            </form>
+        </div>
+    </section>
+</body>
+</html>

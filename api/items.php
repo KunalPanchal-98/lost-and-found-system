@@ -28,7 +28,11 @@ apiRun(function (PDO $pdo): void {
     }
     if ($method === 'GET' && $action === 'dashboard') {
         $user = apiRequireUser($pdo);
-        $statsStmt = $pdo->prepare('SELECT SUM(type = "lost") AS lost_count, SUM(type = "found") AS found_count, (SELECT COUNT(*) FROM claims WHERE user_id = ? AND status IN ("Pending", "Under Review", "Approved")) AS active_claims, SUM(status = "Returned") AS recoveries FROM items WHERE user_id = ?');
+        $statsSql = 'SELECT SUM(type = "lost") AS lost_count, SUM(type = "found") AS found_count,
+            (SELECT COUNT(*) FROM claims WHERE user_id = ? AND status IN ("Pending", "Under Review", "Approved")) AS active_claims,
+            SUM(status = "Returned") AS recoveries
+            FROM items WHERE user_id = ?';
+        $statsStmt = $pdo->prepare($statsSql);
         $statsStmt->execute([$user['id'], $user['id']]);
         $stats = $statsStmt->fetch();
         $reportsStmt = $pdo->prepare($base . ' WHERE i.user_id = ? ORDER BY i.created_at DESC LIMIT 5');
@@ -122,13 +126,21 @@ apiRun(function (PDO $pdo): void {
         $locationId = filter_var($data['location_id'] ?? null, FILTER_VALIDATE_INT);
         $description = trim((string) ($data['description'] ?? ''));
         $date = (string) ($data['item_date'] ?? '');
-        if ($name === '' || !in_array($type, ['lost', 'found'], true) || !$categoryId || !$locationId || $description === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) || !checkdate((int) substr($date, 5, 2), (int) substr($date, 8, 2), (int) substr($date, 0, 4))) {
+        $validDate = preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) === 1
+            && checkdate((int) substr($date, 5, 2), (int) substr($date, 8, 2), (int) substr($date, 0, 4));
+        $valid = $name !== '' && in_array($type, ['lost', 'found'], true)
+            && $categoryId !== false && $categoryId > 0
+            && $locationId !== false && $locationId > 0
+            && $description !== '' && $validDate;
+        if (!$valid) {
             apiRespond(false, 'Complete all required item fields using a valid date.', [], 422);
         }
         $itemTime = (string) ($data['item_time'] ?? '');
         $brand = trim((string) ($data['brand'] ?? ''));
         $color = trim((string) ($data['color'] ?? ''));
-        if (strlen($name) > 255 || strlen($brand) > 120 || strlen($color) > 80 || strlen($description) > 10000 || ($itemTime !== '' && !preg_match('/^(?:[01]\d|2[0-3]):[0-5]\d$/', $itemTime))) {
+        $validLengths = strlen($name) <= 255 && strlen($brand) <= 120 && strlen($color) <= 80 && strlen($description) <= 10000
+            && ($itemTime === '' || preg_match('/^(?:[01]\d|2[0-3]):[0-5]\d$/', $itemTime) === 1);
+        if (!$validLengths) {
             apiRespond(false, 'One or more item fields exceed the allowed length or use an invalid time.', [], 422);
         }
         $category = $pdo->prepare('SELECT id FROM categories WHERE id = ?');
@@ -142,18 +154,40 @@ apiRun(function (PDO $pdo): void {
         $prefix = $type === 'lost' ? 'LF' : 'FD';
         $pdo->beginTransaction();
         try {
-            $stmt = $pdo->prepare('INSERT INTO items (report_id, user_id, type, name, category_id, description, brand, color, location_id, item_date, item_time, image, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "Reported", NOW(), NOW())');
-            $stmt->execute([apiReportId($pdo, $prefix), $user['id'], $type, $name, $categoryId, $description, $brand, $color, $locationId, $date, $itemTime !== '' ? $itemTime : null, $image]);
+            $insert = $pdo->prepare('INSERT INTO items (report_id, user_id, type, name, category_id, description, brand, color, location_id, item_date, item_time, image, status, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "Reported", NOW(), NOW())');
+            $insert->execute([
+                apiReportId($pdo, $prefix),
+                $user['id'],
+                $type,
+                $name,
+                $categoryId,
+                $description,
+                $brand,
+                $color,
+                $locationId,
+                $date,
+                $itemTime !== '' ? $itemTime : null,
+                $image,
+            ]);
             $itemId = (int) $pdo->lastInsertId();
             $details = trim((string) ($data['identifying_details'] ?? ''));
-            $pdo->prepare('INSERT INTO reports (item_id, reported_by, reason, description, status, created_at) VALUES (?, ?, ?, ?, "Pending", NOW())')->execute([$itemId, $user['id'], ucfirst($type) . ' item report', $details]);
+            $report = $pdo->prepare('INSERT INTO reports (item_id, reported_by, reason, description, status, created_at) VALUES (?, ?, ?, ?, "Pending", NOW())');
+            $report->execute([$itemId, $user['id'], ucfirst($type) . ' item report', $details]);
             apiNotify($pdo, (int) $user['id'], ucfirst($type) . ' item reported', 'Your report has been submitted and is under review.', 'success');
 
             $opposite = $type === 'lost' ? 'found' : 'lost';
             $matchesStmt = $pdo->prepare($base . ' WHERE i.type = ? AND i.status NOT IN ("Rejected", "Returned")');
             $matchesStmt->execute([$opposite]);
             foreach ($matchesStmt->fetchAll() as $candidate) {
-                $newItem = ['name' => $name, 'category_id' => $categoryId, 'location_id' => $locationId, 'item_date' => $date, 'color' => $data['color'] ?? '', 'brand' => $data['brand'] ?? ''];
+                $newItem = [
+                    'name' => $name,
+                    'category_id' => $categoryId,
+                    'location_id' => $locationId,
+                    'item_date' => $date,
+                    'color' => $data['color'] ?? '',
+                    'brand' => $data['brand'] ?? '',
+                ];
                 if (apiMatchScore($newItem, $candidate) >= 60) {
                     apiNotify($pdo, (int) $candidate['user_id'], 'Possible item match', 'A new report may match your "' . $candidate['name'] . '" report.', 'info');
                     apiNotify($pdo, (int) $user['id'], 'Possible item match', 'A campus report may match your "' . $name . '" item.', 'info');

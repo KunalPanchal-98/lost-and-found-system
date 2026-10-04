@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="campusFindApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Claims | CampusFind</title>
+    <meta name="description" content="Submit an ownership claim and track its review status.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script defer src="assets/js/app.js"></script>
+</head>
+<body data-page="claims" ng-controller="PageController" ng-cloak>
+    <nav class="topbar">
+        <div class="container nav-wrap">
+            <a href="index.html" class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <line x1="16.2" y1="16.2" x2="21" y2="21"></line>
+                    </svg>
+                </span>
+                <span>CampusFind</span>
+            </a>
+            <button type="button" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="{{navOpen}}" ng-click="toggleNav()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" ng-class="{ open: navOpen }" ng-click="navOpen = false">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="browse.html">Browse</a>
+                <a ng-if="user" href="#" ng-click="$event.preventDefault(); logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-section">
+        <div class="container claim-layout">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <h2>Submit ownership claim</h2>
+                </div>
+                <div class="selected-item-box" ng-if="item">
+                    <strong>{{item.name}}</strong>
+                    <p>{{item.type}} item · {{item.status}}</p>
+                </div>
+                <div class="form-alert" ng-if="message" ng-class="messageType">{{message}}</div>
+                <form class="stack-form" ng-submit="submitClaim()">
+                    <div class="field-group" ng-if="!item">
+                        <label for="claim-item">Item to claim</label>
+                        <select id="claim-item" ng-model="form.item_id" required>
+                            <option value="">Choose a report</option>
+                            <option ng-repeat="candidate in availableItems" ng-value="candidate.id">{{candidate.name}} · {{candidate.type}} · {{candidate.status}}</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label for="claim-unique-feature">Unique identifying feature</label>
+                        <textarea id="claim-unique-feature" ng-model="form.unique_feature" rows="3" required></textarea>
+                    </div>
+                    <div class="field-group">
+                        <label for="claim-time">Approximate time you lost the item / found it</label>
+                        <input id="claim-time" ng-model="form.approximate_time" required placeholder="e.g. Tuesday around 2:30 PM">
+                    </div>
+                    <div class="field-group">
+                        <label for="claim-location">Approximate location</label>
+                        <input id="claim-location" ng-model="form.approximate_location" required placeholder="Building, room, or area">
+                    </div>
+                    <div class="field-group">
+                        <label for="claim-additional">Additional identifying information</label>
+                        <textarea id="claim-additional" ng-model="form.additional_details" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" ng-disabled="busy">Submit Claim</button>
+                </form>
+            </div>
+            <div class="panel-card">
+                <div class="panel-header">
+                    <h2>My Claims</h2>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Submitted</th>
+                                <th>Status</th>
+                                <th>Admin note</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="claim in claims">
+                                <td>{{claim.item_name}}</td>
+                                <td>{{claim.created_at | date:'d MMM yyyy'}}</td>
+                                <td>{{claim.status}}</td>
+                                <td>{{claim.admin_note || '—'}}</td>
+                            </tr>
+                            <tr ng-if="!claims.length">
+                                <td colspan="4">No claims submitted yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

@@ -1,2 +1,6 @@
 .DS_Store
-.vscode/
+
+# Uploaded item images (keep the directory and its .htaccess)
+uploads/items/*
+!uploads/items/.gitkeep
+!uploads/items/.htaccess

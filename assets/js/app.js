@@ -84,16 +84,8 @@
             return image ? base + image : base + 'assets/images/default-item.svg';
         };
 
-        $scope.matchesItem = function (item) {
-            var f = $scope.filters;
-            var q = (f.q || '').toLowerCase();
-            var searchable = [item.name, item.description, item.category_name, item.location_name, item.brand, item.color].join(' ').toLowerCase();
-            return (!q || searchable.indexOf(q) !== -1) &&
-                (!f.type || item.type === f.type) &&
-                (!f.category_id || String(item.category_id) === String(f.category_id)) &&
-                (!f.location_id || String(item.location_id) === String(f.location_id)) &&
-                (!f.date || item.item_date === f.date) &&
-                (!f.status || item.status === f.status);
+        $scope.toggleNav = function () {
+            $scope.navOpen = !$scope.navOpen;
         };
 
         $scope.submitAuth = function () {

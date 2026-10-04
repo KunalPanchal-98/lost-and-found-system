@@ -20,11 +20,21 @@ apiRun(function (PDO $pdo): void {
         }
         $queries = [
             'users' => 'SELECT id, name, email, student_id, phone, role, status, created_at FROM users ORDER BY created_at DESC',
-            'items' => 'SELECT i.id, i.report_id, i.user_id, i.type, i.name, i.status, i.item_date, i.created_at, u.name AS user_name FROM items i LEFT JOIN users u ON u.id = i.user_id ORDER BY i.created_at DESC',
-            'claims' => 'SELECT c.id, c.item_id, c.user_id, c.verification_details, c.status, c.admin_note, c.created_at, i.name AS item_name, i.type AS item_type, i.user_id AS item_owner_id, u.name AS claimant_name FROM claims c JOIN items i ON i.id = c.item_id JOIN users u ON u.id = c.user_id ORDER BY c.created_at DESC',
+            'items' => 'SELECT i.id, i.report_id, i.user_id, i.type, i.name, i.status, i.item_date, i.created_at, u.name AS user_name
+                FROM items i LEFT JOIN users u ON u.id = i.user_id ORDER BY i.created_at DESC',
+            'claims' => 'SELECT c.id, c.item_id, c.user_id, c.verification_details, c.status, c.admin_note, c.created_at,
+                    i.name AS item_name, i.type AS item_type, i.user_id AS item_owner_id, u.name AS claimant_name
+                FROM claims c
+                JOIN items i ON i.id = c.item_id
+                JOIN users u ON u.id = c.user_id
+                ORDER BY c.created_at DESC',
             'categories' => 'SELECT id, name, description, created_at FROM categories ORDER BY name',
             'locations' => 'SELECT id, name, description, created_at FROM locations ORDER BY name',
-            'reports' => 'SELECT r.id, r.item_id, r.reported_by, r.reason, r.description, r.status, r.created_at, i.name AS item_name, u.name AS reporter_name FROM reports r LEFT JOIN items i ON i.id = r.item_id LEFT JOIN users u ON u.id = r.reported_by ORDER BY r.created_at DESC',
+            'reports' => 'SELECT r.id, r.item_id, r.reported_by, r.reason, r.description, r.status, r.created_at, i.name AS item_name, u.name AS reporter_name
+                FROM reports r
+                LEFT JOIN items i ON i.id = r.item_id
+                LEFT JOIN users u ON u.id = r.reported_by
+                ORDER BY r.created_at DESC',
         ];
         if (!isset($queries[$action])) {
             apiRespond(false, 'Unsupported action.', [], 400);

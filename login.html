@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="campusFindApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login | CampusFind</title>
+    <meta name="description" content="Sign in to CampusFind to view your reports, claims, and notifications.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script defer src="assets/js/app.js"></script>
+</head>
+<body data-page="login" ng-controller="PageController" ng-cloak>
+    <nav class="topbar">
+        <div class="container nav-wrap">
+            <a href="index.html" class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <line x1="16.2" y1="16.2" x2="21" y2="21"></line>
+                    </svg>
+                </span>
+                <span>CampusFind</span>
+            </a>
+            <button type="button" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="{{navOpen}}" ng-click="toggleNav()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" ng-class="{ open: navOpen }" ng-click="navOpen = false">
+                <a href="browse.html">Browse Items</a>
+                <a class="btn btn-secondary btn-small" href="register.html">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="auth-page">
+        <div class="auth-shell narrow">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1>Welcome back</h1>
+                    <p>Sign in to view your reports, claims, and notifications.</p>
+                </div>
+                <div class="form-alert error" ng-if="message">{{message}}</div>
+                <form class="auth-form" ng-submit="submitAuth()">
+                    <div class="field-group">
+                        <label for="login-email">Email</label>
+                        <input id="login-email" type="email" ng-model="form.email" required autocomplete="email">
+                    </div>
+                    <div class="field-group">
+                        <label for="login-password">Password</label>
+                        <input id="login-password" type="password" ng-model="form.password" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" ng-disabled="busy">{{busy ? 'Signing in…' : 'Login'}}</button>
+                </form>
+                <div class="auth-footer">
+                    <span>Need an account?</span>
+                    <a href="register.html">Register</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

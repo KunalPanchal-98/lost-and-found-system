@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="campusFindApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Register | CampusFind</title>
+    <meta name="description" content="Create a CampusFind account to report and recover lost items on campus.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script defer src="assets/js/app.js"></script>
+</head>
+<body data-page="register" ng-controller="PageController" ng-cloak>
+    <nav class="topbar">
+        <div class="container nav-wrap">
+            <a href="index.html" class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <line x1="16.2" y1="16.2" x2="21" y2="21"></line>
+                    </svg>
+                </span>
+                <span>CampusFind</span>
+            </a>
+            <button type="button" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="{{navOpen}}" ng-click="toggleNav()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" ng-class="{ open: navOpen }" ng-click="navOpen = false">
+                <a href="browse.html">Browse Items</a>
+                <a class="btn btn-secondary btn-small" href="login.html">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="auth-page">
+        <div class="auth-shell">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1>Create account</h1>
+                    <p>Join the campus community and start reporting lost or found items.</p>
+                </div>
+                <div class="form-alert error" ng-if="message">{{message}}</div>
+                <form class="auth-form" ng-submit="submitAuth()">
+                    <div class="input-grid two-col">
+                        <div class="field-group">
+                            <label for="register-name">Full Name</label>
+                            <input id="register-name" ng-model="form.name" required autocomplete="name">
+                        </div>
+                        <div class="field-group">
+                            <label for="register-email">College Email</label>
+                            <input id="register-email" type="email" ng-model="form.email" required autocomplete="email">
+                        </div>
+                        <div class="field-group">
+                            <label for="register-student-id">Student/Employee ID</label>
+                            <input id="register-student-id" ng-model="form.student_id" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="register-phone">Phone Number</label>
+                            <input id="register-phone" type="tel" ng-model="form.phone" required autocomplete="tel">
+                        </div>
+                        <div class="field-group">
+                            <label for="register-password">Password</label>
+                            <input id="register-password" type="password" ng-model="form.password" minlength="8" required autocomplete="new-password">
+                        </div>
+                        <div class="field-group">
+                            <label for="register-confirm-password">Confirm Password</label>
+                            <input id="register-confirm-password" type="password" ng-model="form.confirm_password" minlength="8" required autocomplete="new-password">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" ng-disabled="busy">Create account</button>
+                </form>
+                <div class="auth-footer">
+                    <span>Already have an account?</span>
+                    <a href="login.html">Login</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

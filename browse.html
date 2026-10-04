@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="campusFindApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Browse Items | CampusFind</title>
+    <meta name="description" content="Search campus lost and found reports by keyword, type, category, location, and date.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script defer src="assets/js/app.js"></script>
+</head>
+<body data-page="browse" ng-controller="PageController" ng-cloak>
+    <nav class="topbar">
+        <div class="container nav-wrap">
+            <a href="index.html" class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <line x1="16.2" y1="16.2" x2="21" y2="21"></line>
+                    </svg>
+                </span>
+                <span>CampusFind</span>
+            </a>
+            <button type="button" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="{{navOpen}}" ng-click="toggleNav()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" ng-class="{ open: navOpen }" ng-click="navOpen = false">
+                <a href="index.html">Home</a>
+                <a class="active" href="browse.html">Browse Items</a>
+                <a ng-if="user" href="dashboard.html">Dashboard</a>
+                <a ng-if="!user" href="login.html">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-section">
+        <div class="container">
+            <div class="page-header narrow-header">
+                <div>
+                    <p class="eyebrow">Search campus reports</p>
+                    <h1>Browse Lost &amp; Found Items</h1>
+                </div>
+            </div>
+            <div class="form-alert error" ng-if="message">{{message}}</div>
+            <div class="browse-panel">
+                <div class="search-panel">
+                    <div class="search-row">
+                        <input ng-model="filters.q" ng-change="loadItems()" type="search" placeholder="Search item, description, brand, colour…" class="search-box" aria-label="Search items">
+                    </div>
+                    <div class="filter-grid">
+                        <select ng-model="filters.type" ng-change="loadItems()" aria-label="Filter by type">
+                            <option value="">All Types</option>
+                            <option value="lost">Lost</option>
+                            <option value="found">Found</option>
+                        </select>
+                        <select ng-model="filters.category_id" ng-change="loadItems()" aria-label="Filter by category">
+                            <option value="">All Categories</option>
+                            <option ng-repeat="category in categories" ng-value="category.id">{{category.name}}</option>
+                        </select>
+                        <select ng-model="filters.location_id" ng-change="loadItems()" aria-label="Filter by location">
+                            <option value="">All Locations</option>
+                            <option ng-repeat="location in locations" ng-value="location.id">{{location.name}}</option>
+                        </select>
+                        <input type="date" aria-label="Filter by date" ng-model="filters.date" ng-change="loadItems()">
+                        <select ng-model="filters.status" ng-change="loadItems()" aria-label="Filter by status">
+                            <option value="">All Status</option>
+                            <option>Reported</option>
+                            <option>Under Review</option>
+                            <option>Matched</option>
+                            <option>Claim Pending</option>
+                            <option>Verified</option>
+                            <option>Returned</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="item-grid">
+                    <article class="item-card" ng-repeat="item in items">
+                        <div class="item-card-image">
+                            <img ng-src="{{imageUrl(item.image)}}" alt="{{item.name}}">
+                        </div>
+                        <div class="item-card-body">
+                            <div class="card-row">
+                                <h3>{{item.name}}</h3>
+                                <span class="tag" ng-class="'tag-' + item.type">{{item.type}}</span>
+                            </div>
+                            <p class="muted">{{item.category_name}} · {{item.location_name}}</p>
+                            <div class="row-meta">
+                                <span>{{item.item_date | date:'d MMM yyyy'}}</span>
+                                <span>{{item.status}}</span>
+                            </div>
+                            <a class="btn btn-primary btn-small" ng-href="item-details.html?id={{item.id}}">View Details</a>
+                        </div>
+                    </article>
+                </div>
+                <div class="empty-card" ng-if="!items.length">
+                    <h3>No matching items found.</h3>
+                    <p>Try adjusting filters or check back later.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

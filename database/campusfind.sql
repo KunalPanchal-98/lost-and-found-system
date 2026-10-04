@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS claims (
   user_id INT NOT NULL,
   verification_details TEXT NOT NULL,
   status VARCHAR(50) NOT NULL DEFAULT 'Pending',
-  admin_note TEXT DEFAULT '',
+  admin_note TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_claims_item FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS reports (
   item_id INT NOT NULL,
   reported_by INT NOT NULL,
   reason VARCHAR(255) NOT NULL,
-  description TEXT DEFAULT '',
+  description TEXT,
   status VARCHAR(50) NOT NULL DEFAULT 'Pending',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_reports_item FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
@@ -97,16 +97,16 @@ CREATE TABLE IF NOT EXISTS reports (
 );
 
 INSERT IGNORE INTO users (name, email, student_id, phone, password, role, status) VALUES
-('CampusFind Admin', 'admin@campusfind.edu', 'ADM-1001', '9999999999', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'admin', 'active'),
-('Aarav Sharma', 'aarav@campusfind.edu', 'CS-101', '9876543210', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'user', 'active'),
-('Nisha Verma', 'nisha@campusfind.edu', 'EC-205', '9876543211', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'user', 'active'),
-('Rohan Mehta', 'rohan@campusfind.edu', 'ME-112', '9876543212', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'user', 'active'),
-('Priya Nair', 'priya@campusfind.edu', 'EE-201', '9876543213', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'user', 'active'),
-('Vikram Singh', 'vikram@campusfind.edu', 'BT-110', '9876543214', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'user', 'active'),
-('Ananya Iyer', 'ananya@campusfind.edu', 'CH-118', '9876543215', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'user', 'active'),
-('Karan Patel', 'karan@campusfind.edu', 'IT-230', '9876543216', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'user', 'active'),
-('Megha Joshi', 'megha@campusfind.edu', 'MBA-120', '9876543217', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'user', 'active'),
-('Harsh Gupta', 'harsh@campusfind.edu', 'PH-402', '9876543218', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'user', 'active');
+('CampusFind Admin', 'admin@campusfind.edu', 'ADM-1001', '9999999999', '$2y$12$ptOg4ahilUUDKnAAu1KpAO.tlyG.axRUFo/.SwEWHp1k/Bbg1xrTa', 'admin', 'active'),
+('Aarav Sharma', 'aarav@campusfind.edu', 'CS-101', '9876543210', '$2y$12$ptOg4ahilUUDKnAAu1KpAO.tlyG.axRUFo/.SwEWHp1k/Bbg1xrTa', 'user', 'active'),
+('Nisha Verma', 'nisha@campusfind.edu', 'EC-205', '9876543211', '$2y$12$ptOg4ahilUUDKnAAu1KpAO.tlyG.axRUFo/.SwEWHp1k/Bbg1xrTa', 'user', 'active'),
+('Rohan Mehta', 'rohan@campusfind.edu', 'ME-112', '9876543212', '$2y$12$ptOg4ahilUUDKnAAu1KpAO.tlyG.axRUFo/.SwEWHp1k/Bbg1xrTa', 'user', 'active'),
+('Priya Nair', 'priya@campusfind.edu', 'EE-201', '9876543213', '$2y$12$ptOg4ahilUUDKnAAu1KpAO.tlyG.axRUFo/.SwEWHp1k/Bbg1xrTa', 'user', 'active'),
+('Vikram Singh', 'vikram@campusfind.edu', 'BT-110', '9876543214', '$2y$12$ptOg4ahilUUDKnAAu1KpAO.tlyG.axRUFo/.SwEWHp1k/Bbg1xrTa', 'user', 'active'),
+('Ananya Iyer', 'ananya@campusfind.edu', 'CH-118', '9876543215', '$2y$12$ptOg4ahilUUDKnAAu1KpAO.tlyG.axRUFo/.SwEWHp1k/Bbg1xrTa', 'user', 'active'),
+('Karan Patel', 'karan@campusfind.edu', 'IT-230', '9876543216', '$2y$12$ptOg4ahilUUDKnAAu1KpAO.tlyG.axRUFo/.SwEWHp1k/Bbg1xrTa', 'user', 'active'),
+('Megha Joshi', 'megha@campusfind.edu', 'MBA-120', '9876543217', '$2y$12$ptOg4ahilUUDKnAAu1KpAO.tlyG.axRUFo/.SwEWHp1k/Bbg1xrTa', 'user', 'active'),
+('Harsh Gupta', 'harsh@campusfind.edu', 'PH-402', '9876543218', '$2y$12$ptOg4ahilUUDKnAAu1KpAO.tlyG.axRUFo/.SwEWHp1k/Bbg1xrTa', 'user', 'active');
 
 INSERT IGNORE INTO categories (name, description) VALUES
 ('Electronics', 'Phones, chargers, laptops, and accessories'),
