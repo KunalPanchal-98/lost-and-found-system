@@ -1,0 +1,12 @@
+.dashboard-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.admin-shell .stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.notification-list-panel {
+    display: grid;
+    gap: 16px;
+}
