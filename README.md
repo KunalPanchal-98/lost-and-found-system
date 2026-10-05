@@ -23,7 +23,7 @@ No Node.js, npm, frontend build step, or frontend framework is required.
 2. Start Apache and MySQL from the XAMPP control panel.
 3. Import `database/campusfind.sql` into MySQL (for example, via phpMyAdmin). The script creates the `campusfind` database and tables and seeds demo records. It does not drop existing tables.
 4. Configure the database connection (see below).
-5. Open `http://localhost/CampusFind/` in your browser.
+5. Open `http://localhost/lost-and-found-system/` in your browser.
 
 The browser must access the project through Apache; opening the HTML files directly as `file://` will not work because the PHP APIs require a web server.
 
